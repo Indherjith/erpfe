@@ -1,0 +1,39 @@
+/* CustomCalendar.css */
+
+.react-calendar {
+    border: none !important; /* Removes the border from the calendar */
+    width: 100% !important; /* Set the desired width */
+    height: auto !important; /* Set the desired height, or adjust as needed */
+    max-width: 400px; 
+}
+
+.react-calendar__tile {
+    border: none !important; /* Removes the border from each tile */
+}
+
+.react-calendar__month-view__days__day {
+    border: none !important; /* Removes the border from day cells */
+    color: #2596BE; /* Color for numbers */
+}
+
+.react-calendar__month-view__weekdays__weekday {
+    color: #004E69; /* Color for letters (weekdays) */
+}
+
+.react-calendar__tile--active {
+    background: #004E69 !important; /* Background color for active tile */
+    color: #fff !important; /* Text color for active tile */
+}
+
+.react-calendar__tile--active:hover {
+    background: #003b5c !important; /* Darker background color for hover effect on active tile */
+}
+
+.react-calendar__tile--now {
+    border: 2px solid #004E69 !important; /* Border color for current date */
+    color: #004E69 !important; /* Text color for current date */
+}
+
+.react-calendar__navigation button {
+    color: #004E69; /* Color for navigation buttons (optional) */
+}

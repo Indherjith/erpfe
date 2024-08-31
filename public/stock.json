@@ -1,0 +1,122 @@
+[
+    {
+      "id": 1,
+      "Date": "2024-08-05",
+      "CustomerName": "John Doe",
+      "Type": "Chicken",
+      "Category": "Meat",
+      "NoOfKg": "5.0",
+      "PricePerKg": "200",
+      "TotalAmount": "1000"
+    },
+    {
+      "id": 2,
+      "Date": "2024-08-06",
+      "CustomerName": "Jane Smith",
+      "Type": "Mutton",
+      "Category": "Meat",
+      "NoOfKg": "3.0",
+      "PricePerKg": "300",
+      "TotalAmount": "900"
+    },
+    {
+      "id": 3,
+      "Date": "2024-08-07",
+      "CustomerName": "Jim Brown",
+      "Type": "Oil",
+      "Category": "Grocery",
+      "NoOfKg": "10.0",
+      "PricePerKg": "150",
+      "TotalAmount": "1500"
+    },
+    {
+      "id": 4,
+      "Date": "2024-08-08",
+      "CustomerName": "Lucy Liu",
+      "Type": "Skm",
+      "Category": "Frozen",
+      "NoOfKg": "2.5",
+      "PricePerKg": "250",
+      "TotalAmount": "625"
+    },
+    {
+      "id": 5,
+      "Date": "2024-08-09",
+      "CustomerName": "Mark Lee",
+      "Type": "Meat",
+      "Category": "Meat",
+      "NoOfKg": "4.0",
+      "PricePerKg": "350",
+      "TotalAmount": "1400"
+    },
+    {
+      "id": 6,
+      "Date": "2024-08-19",
+      "CustomerName": "John Doe1",
+      "Type": "Chicken",
+      "Category": "Meat",
+      "NoOfKg": "5.0",
+      "PricePerKg": "200",
+      "TotalAmount": "1000"
+    },
+    {
+      "id": 7,
+      "Date": "2024-08-08",
+      "CustomerName": null,
+      "Type": "Type1",
+      "Category": "Category1",
+      "NoOfKg": "10",
+      "PricePerKg": "100",
+      "TotalAmount": "100.00"
+    },
+    {
+      "id": 8,
+      "Date": "2024-08-08",
+      "CustomerName": null,
+      "Type": null,
+      "Category": null,
+      "NoOfKg": "10",
+      "PricePerKg": "1000",
+      "TotalAmount": "100000.00"
+    },
+    {
+      "id": 9,
+      "Date": "2024-08-08",
+      "CustomerName": null,
+      "Type": "chicken",
+      "Category": "broiler",
+      "NoOfKg": "102",
+      "PricePerKg": "22",
+      "TotalAmount": "44.00"
+    },
+    {
+      "id": 10,
+      "Date": "2024-08-08",
+      "CustomerName": null,
+      "Type": "chicken",
+      "Category": "broiler",
+      "NoOfKg": "33",
+      "PricePerKg": "67",
+      "TotalAmount": "402.00"
+    },
+    {
+      "id": 11,
+      "Date": "2024-08-12",
+      "CustomerName": null,
+      "Type": "mutton",
+      "Category": "broiler",
+      "NoOfKg": "33",
+      "PricePerKg": "99",
+      "TotalAmount": "891.00"
+    },
+    {
+      "id": 12,
+      "Date": "2024-08-12",
+      "CustomerName": null,
+      "Type": "chicken",
+      "Category": "countryChicken",
+      "NoOfKg": "",
+      "PricePerKg": "",
+      "TotalAmount": ""
+    }
+  ]
