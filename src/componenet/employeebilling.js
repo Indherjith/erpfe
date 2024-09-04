@@ -66,6 +66,9 @@ const Billing = () => {
 			
 			if(matches.length == 0){
 				localStorage.removeItem('prodemp');
+				setProdemp('');
+				setDropdownCategoryValue('');
+				setDropdowntypeValue('');
 			}
 		}
 	},[])
