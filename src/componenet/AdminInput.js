@@ -22,6 +22,7 @@ import { Link } from "react-router-dom";
 import { baseUrl } from './../backenddata';
 
 const StockManager = () => {
+	const AdminAuth = localStorage.getItem('adminauth');
 	
 	const prodadmin = localStorage.getItem('prodadmin');
 
@@ -165,7 +166,7 @@ const StockManager = () => {
 		}
 	};
 
-	return (
+	if(AdminAuth){return (
 		<Box sx={{ display: "flex", flexDirection: "column", height: "100vh" }}>
 			{/* Fixed AppBar */}
 			<AppBar
@@ -549,7 +550,9 @@ const StockManager = () => {
 				</Box>
 			</Box>
 		</Box>
-	);
+	);}else{
+		window.location.reload();
+	}
 };
 
 export default StockManager;

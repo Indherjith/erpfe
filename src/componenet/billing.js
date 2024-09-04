@@ -24,7 +24,7 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import DeleteIcon from "@mui/icons-material/Delete";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const style = {
@@ -41,6 +41,9 @@ const style = {
 };
 
 const Billing = () => {
+	const navigate = useNavigate();
+	const AdminAuth = localStorage.getItem('adminauth');
+
 	const [tableData1,setTableData1] = useState([]);
 	const [currItem,setCurrItem] = useState({});
 	const [categoryItems, setCategoryItems] = useState([]);
@@ -71,7 +74,7 @@ const Billing = () => {
 
 	const [dropdowntypeValue, setDropdowntypeValue] = useState("");
 	const [dropdownCategoryValue, setDropdownCategoryValue] = useState("");
-	const [kg, setKg] = useState("");
+	const [kg, setKg] = useState(0);
 	const [price, setPrice] = useState("");
 	const [amount, setAmount] = useState("");
 	const [tableData, setTableData] = useState([]);
@@ -155,6 +158,7 @@ const Billing = () => {
 		else{
 			alert(`${event.target.value} Stock is Not Available`);
 			setDropdownCategoryValue('');
+			setDropdowntypeValue('');
 		}
 	};
 	const handleKgchange = (e) => {
@@ -162,7 +166,7 @@ const Billing = () => {
 			setKg(e);
 		}
 		else{
-			alert(`${currItem.type} ${currItem.name} ${currItem.quantity}kgs only Available `);
+			alert(`${currItem.type || "Entered Item"} ${currItem.name || ''} ${currItem.quantity || 0}kgs only Available `);
 			setKg(currItem.quantity); 
 		}
 	};
@@ -197,6 +201,15 @@ const Billing = () => {
 	const tax = "10%"; // Tax as a percentage string
 
 	const handleAddItemClick = () => {
+		if(dropdownCategoryValue == '' || dropdowntypeValue == ''){
+			alert('Not able to add unavailable items');
+			setDropdownCategoryValue('');
+			setDropdowntypeValue('');
+			setAmount('');
+			setKg('');
+			setPrice('');
+			return;
+		}
 		const itemCode = handleItemCode(dropdowntypeValue, dropdownCategoryValue);
 
 		// Remove the percentage symbol and parse it as a float
@@ -328,7 +341,8 @@ const Billing = () => {
 		setReturnAmount(calculatedReturnAmount);
 	};
 
-	return (
+	if(AdminAuth){
+return (
 		<Box sx={{ maxWidth: "100vw", maxHeight: "100vh", overflowX: "hidden" }}>
 			<AppBar sx={{ height: "112px", position: "static", top: 0 }}>
 				<Toolbar
@@ -493,6 +507,7 @@ const Billing = () => {
 							<Select
 								onChange={handleDropdownChangeCategory}
 								value={dropdownCategoryValue}
+								disabled = {dropdowntypeValue == "Chicken" ? false : true}
 								displayEmpty
 								renderValue={(selected) => selected || ""}
 								sx={{
@@ -1181,7 +1196,7 @@ const Billing = () => {
 						>
 							<Button
 								onClick={handleOpen}
-								disabled = {returnAmount < 0 ? (true):(false)}
+								disabled = {(returnAmount < 0 || tableData.length <= 0) ? (true):(false)}
 								variant="contained"
 								sx={{
 									width: "130px",
@@ -1479,6 +1494,18 @@ const Billing = () => {
 													color: "#000000",
 												}}
 											>
+												CATEGORY
+											</Typography>
+										</TableCell>
+										<TableCell sx={{ borderBottom: "none" }}>
+											<Typography
+												sx={{
+													fontFamily: "Lato",
+													fontWeight: "700",
+													fontSize: "14px",
+													color: "#000000",
+												}}
+											>
 												TOTAL STOCK
 											</Typography>
 										</TableCell>
@@ -1545,6 +1572,18 @@ const Billing = () => {
 													}}
 												>
 													{row.name}
+												</Typography>
+											</TableCell>
+											<TableCell sx={{ borderBottom: "none" }}>
+												<Typography
+													sx={{
+														fontFamily: "Lato",
+														fontWeight: "400",
+														fontSize: "16px",
+														color: "#000000",
+													}}
+												>
+													{row.type}
 												</Typography>
 											</TableCell>
 											<TableCell sx={{ borderBottom: "none" }}>
@@ -1630,6 +1669,10 @@ const Billing = () => {
 			</Box>
 		</Box>
 	);
+	}else{
+		window.location.href = '/';
+	}
+	
 };
 
 export default Billing;

@@ -13,11 +13,14 @@ import {
 	MenuItem,
 	Button,
 } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { baseUrl } from './../backenddata';
 
 const Navbar = () => {
+	const navigate = useNavigate();
+	const EmployeeAuth = localStorage.getItem('employeeauth');
+ 
 	const [data, setData] = useState([]);
 	const [sortConfig, setSortConfig] = useState({
 		key: "Date",
@@ -107,6 +110,7 @@ const Navbar = () => {
 		return [];
 	};
 
+	if(EmployeeAuth){
 	return (
 		<Box sx={{ width: "100%", overflowX: "hidden" }}>
 			<Box
@@ -363,6 +367,10 @@ const Navbar = () => {
 			</Box>
 		</Box>
 	);
+	}
+	else{
+		window.location.href = '/';
+	}
 };
 
 export default Navbar;
