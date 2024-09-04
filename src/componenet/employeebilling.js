@@ -66,12 +66,7 @@ const Billing = () => {
 		try{
 			const response = await axios.get(`${baseUrl}stocks`);
 			if(response.data.Items){
-				let data = response.data.Items;
-				const matches = data.find(item=>(item.name == prodemp && item.type == prodemp))
-				if(matches.name !== prodemp){
-					setProdemp('');
-				}
-				setTableData1(data);
+				setTableData1(response.data.Items);
 			}
 			else{
 				alert(response.data.msg)
