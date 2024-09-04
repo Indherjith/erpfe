@@ -66,7 +66,6 @@ const Billing = () => {
 			
 			if(matches.length == 0){
 				localStorage.setItem('prodemp','');
-				window.location.reload();
 			}
 		}
 	},[])
