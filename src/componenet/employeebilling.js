@@ -61,8 +61,8 @@ const Billing = () => {
 			])
 		}
 		else{
-			const matches = tableData1.find(item=>(item.name == prodemp && item.type == prodemp))
-			if(!matches.name && !matches.type){
+			const matches = tableData1.filter(item=>(item.name == prodemp && item.type == prodemp))
+			if(!matches.length == 0){
 				setProdemp('');
 			}
 		}
