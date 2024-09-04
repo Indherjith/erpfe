@@ -91,7 +91,7 @@ const Billing = () => {
 
 	const [dropdowntypeValue, setDropdowntypeValue] = useState(prodemp || '');
 	const [dropdownCategoryValue, setDropdownCategoryValue] = useState(prodemp != 'Chicken' ? prodemp : '');
-	const [kg, setKg] = useState(0);
+	const [kg, setKg] = useState();
 	const [price, setPrice] = useState("");
 	const [amount, setAmount] = useState("");
 	const [tableData, setTableData] = useState([]);
