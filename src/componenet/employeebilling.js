@@ -43,12 +43,14 @@ const style = {
 const Billing = () => {
 	const navigate = useNavigate();
 	const EmployeeAuth = localStorage.getItem('employeeauth');
-
-	const prodemp = localStorage.getItem('prodemp');
+	const proditem = localStorage.getItem('prodemp');
+	const [prodemp,setProdemp] = useState(proditem);
 
 	const [tableData1,setTableData1]=useState([]);
 	const [currItem,setCurrItem] = useState({});
     const [categoryItems, setCategoryItems] = useState([]);
+
+
 
 	useEffect(()=>{
 		fetchStocks();
@@ -64,7 +66,12 @@ const Billing = () => {
 		try{
 			const response = await axios.get(`${baseUrl}stocks`);
 			if(response.data.Items){
-			setTableData1(response.data.Items);
+				let data = response.data.Items;
+				const matches = data.find(item=>(item.name == prodemp && item.type == prodemp))
+				if(matches.name !== prodemp){
+					setProdemp('');
+				}
+				setTableData1(data);
 			}
 			else{
 				alert(response.data.msg)
