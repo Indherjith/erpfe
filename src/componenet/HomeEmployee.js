@@ -128,21 +128,7 @@ const HomeEmployee = () => {
                 <Link to={item.path} style={{ textDecoration: 'none' }}>
                   <Card
                     onClick={()=>{
-                      if(item.name == "Chicken"){
-                        localStorage.setItem('prodemp',item.name)
-                      }
-                      else if(item.name == "Mutton"){
-                        localStorage.setItem('prodemp',item.name)
-                      }
-                      else if(item.name == "Meat"){
-                        localStorage.setItem('prodemp',item.name)
-                      }
-                      else if(item.name == "SKM Frozen item"){
-                        localStorage.setItem('prodemp',item.name)
-                      }
-                      else{
-                        localStorage.setItem('prodemp',item.name)
-                      }
+                        localStorage.setItem('prodemp',item.name);
                     }}
                     sx={{
                       border: "2px solid #004E69",

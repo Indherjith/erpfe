@@ -25,7 +25,7 @@ function App() {
             <Route path='/homeemployee' element={<EmployeeAuth><HomeEmployee/></EmployeeAuth>}></Route>
             <Route path='/homeadmin' element={<AdminAuth><HomeAdmin/></AdminAuth>}/>
             <Route path='/adminbilling' element={<AdminAuth><Billing/></AdminAuth>}/>
-            <Route path='/dashboard' element={<Dashboard/>}/>
+            <Route path='/dashboard' element={<AdminAuth><Dashboard/></AdminAuth>}/>
             <Route path='/adminoutput' element={<AdminAuth><Outputstock/></AdminAuth>}/>
             <Route path='/navbar' element={<Navbar/>}/>
             <Route path='/input' element={<AdminAuth><Inputstock/></AdminAuth>}/>

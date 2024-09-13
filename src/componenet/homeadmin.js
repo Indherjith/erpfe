@@ -56,6 +56,23 @@ const HomeAdmin = () => {
                 LogOut
               </Button>
             </Link>
+           <Link to='/dashboard'>
+              <Button
+                color="inherit"
+                variant="contained"
+                sx={{
+                  ml:2.5,
+                  backgroundColor: (theme) => theme.palette.secondary.main,
+                  color: (theme) => theme.palette.primary.main,
+                  '&:hover': {
+                    bgcolor: '#004E69',
+                    color: 'white',
+                  },
+                }}
+              >
+                Dashbord
+              </Button>
+            </Link>
             <Typography
               variant="h6"
               component="div"

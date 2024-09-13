@@ -1,262 +1,438 @@
-import React from 'react';
-import {
-  Box,
-  AppBar,
-  Toolbar,
-  Typography,
-  TableBody,
-  TableContainer,
-  Table,
-  TableHead,
-  TableRow,
-  TableCell,
-  Paper,
-  Grid
-} from '@mui/material';
-import Calendar from 'react-calendar';
-import 'react-calendar/dist/Calendar.css';
-import './dashboard.css';
+import React, { useEffect, useState } from 'react'
+import Navbar from "./Navbar"
+import Card from '@mui/material/Card';
+import Typography from '@mui/material/Typography';
+import { Box,AppBar,Toolbar,Button} from '@mui/material';
+import Grid from '@mui/material/Grid';
+import { BarChart } from '@mui/x-charts/BarChart';
+import Calendar from "./Calender";
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import { PieChart } from '@mui/x-charts/PieChart';
+import {Link} from 'react-router-dom'
+import Chip from '@mui/material/Chip';
+import { baseUrl } from '../backenddata';
+import axios from 'axios';
 
-function createData(name, totalStock, quantity, rate, price, status) {
-  return { name, totalStock, quantity, rate, price, status };
-}
-
-const rows = [
-  createData('Chicken', 100, 100, 280, '28,000', 'in stock'),
-  createData('Mutton', 237, 9.0, 37, '38,000', 'Out of Stock'),
-];
-
-const calculateTotals = (rows) => {
-  let totalStock = 0;
-  let totalQuantity = 0;
-  let totalRate = 0;
-  let totalPrice = 0;
-
-  rows.forEach(row => {
-    totalStock += row.totalStock;
-    totalQuantity += row.quantity;
-    totalRate += row.rate;
-    totalPrice += parseInt(row.price.replace(/,/g, '')); // Convert price to number
-  });
-
-  return {
-    totalStock,
-    totalQuantity,
-    totalRate,
-    totalPrice: totalPrice.toLocaleString('en-US') // Convert number to string with commas
-  };
-};
-
-const getStatusColor = (status) => {
-  if (status.toLowerCase() === 'in stock') {
-    return 'green';
-  } else if (status.toLowerCase() === 'out of stock') {
-    return 'red';
-  }
-  return 'black'; 
-};
 
 const Dashboard = () => {
-  const totals = calculateTotals(rows);
+      const [data2,setData2] = useState([{ label: 'Chicken', value: 300 ,color:"#2596BE"},
+        { label: 'Mutton', value: 300,color:'#004E69'},
+        { label: 'Meat', value: 300,color:'#E74C3C '},
+        { label: 'Frozen', value: 300,color:'#28B463'},
+        { label: 'Oil', value: 300,color:'#D35400'}]); 
+      
+      const [row1,setRow1] = useState([]);
+      const [dailyTotal,setDailyTotal] = useState(0);
+      const [graphData,setGraphdata] = useState({chicken:[0, 0, 0, 0, 0, 0, 0],mutton:[0, 0, 0, 0, 0, 0, 0],meat:[0, 0, 0, 0, 0, 0, 0],frozen:[0, 0, 0, 0, 0, 0, 0],oil:[0, 0, 0, 0, 0, 0, 0]});
+      const [salesdata,setSalesdata] = useState({});
+      const [stockdata,setStockdata] = useState({});
+
+
+      useEffect(() => {
+        fetchData();
+        fetchgraph();
+        fetchpie();
+        fetchstocks();
+      }, []);
+
+      const fetchstocks = async ()=>{
+        try {
+          const response = await axios.get(`${baseUrl}card`);
+          setStockdata(response.data.Items);
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+      }
+
+      const fetchpie = async ()=>{
+        try {
+          const response = await axios.get(`${baseUrl}chart`);
+          let target = response.data.Items;
+          setSalesdata(response.data.Items);
+          let data =  [{ label: 'Chicken', value: target.chicken ,color:"#2596BE"},
+                { label: 'Mutton', value: target.mutton,color:'#004E69'},
+                { label: 'Meat', value: target.meat,color:'#E74C3C '},
+                { label: 'Frozen', value: target.frozen,color:'#28B463'},
+                { label: 'Oil', value: target.oil,color:'#D35400'}];
+          
+          setData2(data);
+          
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+      }
+
+      const fetchgraph = async ()=>{
+        try {
+          const response = await axios.get(`${baseUrl}graph`);
+          setGraphdata(response.data.Items);
+          
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+      }
+    
+      const fetchData = async () => {
+        try {
+          const response = await axios.get(`${baseUrl}today`);
+          setRow1(response.data.Items);
+          setDailyTotal(response.data.total);
+          
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+      };
 
   return (
-    <Box sx={{ maxWidth: '100vw', maxHeight: '100vh'}}>
-      <AppBar sx={{ height: '85px', position: 'static' }}>
-        <Toolbar sx={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', bgcolor: 'white' }}>
-          <Typography sx={{ fontFamily: 'lato', fontWeight: 700, fontSize: '36px', color: '#004E69' }}>கொங்கு கறி கடை</Typography>
-        </Toolbar>
-      </AppBar>
-      <Grid container spacing={5} mt={1} px={8}>
-        <Grid item xs={12} sm={6} md={3}>
-          <Paper elevation={5} >
-          <Box sx={{ p: 2 }}>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between',flexDirection:'row'}}>
-              <Typography sx={{ fontFamily: 'lato', fontWeight: 600, fontSize: '12px' }}>TOTAL ORDERS</Typography>
-              <Typography sx={{ fontFamily: 'lato', fontWeight: 400, fontSize: '12px', color: '#10B981' }}>in KGs</Typography>
-              </Box>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between',flexDirection:'row'}}>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2,flexDirection:'column' }}>
-                <Typography sx={{ fontFamily: 'lato', fontWeight: 700, fontSize: '20px' }}>Chiken</Typography>
-                <Typography sx={{ fontFamily: 'lato', fontWeight: 400, fontSize: '16px' }}>80 kg</Typography>
-              </Box>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2,flexDirection:'column' }}>
-                <Typography sx={{ fontFamily: 'lato', fontWeight: 700, fontSize: '20px' }}>Mutton</Typography>
-                <Typography sx={{ fontFamily: 'lato', fontWeight: 400, fontSize: '16px' }}>80 kg</Typography>
-                </Box>
-              </Box>
-            </Box>
-          </Paper>
-        </Grid>
-        <Grid item xs={12} sm={6} md={3}>
-          <Paper elevation={5}>
-            <Box sx={{ p: 2 }}>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between',flexDirection:'row'}}>
-              <Typography sx={{ fontFamily: 'lato', fontWeight: 600, fontSize: '12px' }}>TOTAL ORDERS</Typography>
-              <Typography sx={{ fontFamily: 'lato', fontWeight: 400, fontSize: '12px', color: '#10B981' }}>in KGs</Typography>
-              </Box>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between',flexDirection:'row'}}>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2,flexDirection:'column' }}>
-                <Typography sx={{ fontFamily: 'lato', fontWeight: 700, fontSize: '20px' }}>Chiken</Typography>
-                <Typography sx={{ fontFamily: 'lato', fontWeight: 400, fontSize: '16px' }}>80 kg</Typography>
-              </Box>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2,flexDirection:'column' }}>
-                <Typography sx={{ fontFamily: 'lato', fontWeight: 700, fontSize: '20px' }}>Mutton</Typography>
-                <Typography sx={{ fontFamily: 'lato', fontWeight: 400, fontSize: '16px' }}>80 kg</Typography>
-                </Box>
-              </Box>
-            </Box>
-          </Paper>
-        </Grid>
-        <Grid item xs={12} sm={6} md={3}>
-          <Paper elevation={5}>
-          <Box sx={{ p: 2 }}>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between',flexDirection:'row'}}>
-              <Typography sx={{ fontFamily: 'lato', fontWeight: 600, fontSize: '12px' }}>TOTAL ORDERS</Typography>
-              <Typography sx={{ fontFamily: 'lato', fontWeight: 400, fontSize: '12px', color: '#10B981' }}>in KGs</Typography>
-              </Box>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between',flexDirection:'row'}}>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2,flexDirection:'column' }}>
-                <Typography sx={{ fontFamily: 'lato', fontWeight: 700, fontSize: '20px' }}>Chiken</Typography>
-                <Typography sx={{ fontFamily: 'lato', fontWeight: 400, fontSize: '16px' }}>80 kg</Typography>
-              </Box>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2,flexDirection:'column' }}>
-                <Typography sx={{ fontFamily: 'lato', fontWeight: 700, fontSize: '20px' }}>Mutton</Typography>
-                <Typography sx={{ fontFamily: 'lato', fontWeight: 400, fontSize: '16px' }}>80 kg</Typography>
-                </Box>
-              </Box>
-            </Box>
-          </Paper>
-        </Grid>
-        <Grid item xs={12} sm={6} md={3}>
-          <Paper elevation={5}>
-          <Box sx={{ p: 2 }}>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between',flexDirection:'row'}}>
-              <Typography sx={{ fontFamily: 'lato', fontWeight: 600, fontSize: '12px' }}>TOTAL ORDERS</Typography>
-              <Typography sx={{ fontFamily: 'lato', fontWeight: 400, fontSize: '12px', color: '#10B981' }}>in KGs</Typography>
-              </Box>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between',flexDirection:'row'}}>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2,flexDirection:'column' }}>
-                <Typography sx={{ fontFamily: 'lato', fontWeight: 700, fontSize: '20px' }}>Chiken</Typography>
-                <Typography sx={{ fontFamily: 'lato', fontWeight: 400, fontSize: '16px' }}>80 kg</Typography>
-              </Box>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2,flexDirection:'column' }}>
-                <Typography sx={{ fontFamily: 'lato', fontWeight: 700, fontSize: '20px' }}>Mutton</Typography>
-                <Typography sx={{ fontFamily: 'lato', fontWeight: 400, fontSize: '16px' }}>80 kg</Typography>
-                </Box>
-              </Box>
-            </Box>
-          </Paper>
-        </Grid>
-      </Grid>
-      <Grid container spacing={2} mt={2} px={8}>
-        <Grid item xs={12} md={8}>
-          <Box sx={{ p: 2 }}>
-            <Typography sx={{ fontFamily: 'lato', fontWeight: 700, fontSize: '20px' }}>Weekly Meat Selling</Typography>
-          </Box>
-        </Grid>
-        <Grid item xs={12} md={4}>
-        <Box
-    sx={{
-      border: '2px solid #004E69',
-      borderRadius: '21.14px',
-      p: 2,
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
+  <>
+    <AppBar sx={{ height: "112px", position: "static", top: 0 }}>
+				<Toolbar
+					sx={{
+						height: "100%",
+						display: "flex",
+						alignItems: "center",
+						bgcolor: "white",
+					}}
+				>
+					{/* Button on the left */}
+					<Link to="/homeadmin">
+						<Button
+							color="inherit"
+							variant="contained"
+							sx={{
+								backgroundColor: "#004E69",
+								color: "white",
+								"&:hover": {
+									bgcolor: "#004E69",
+									color: "white",
+								},
+							}}
+						>
+							Back
+						</Button>
+					</Link>
+
+					{/* Typography centered */}
+					<Typography
+						sx={{
+							fontFamily: "Lato",
+							fontWeight: 700,
+							fontSize: "36px",
+							color: "#004E69",
+							flexGrow: 1, // Allows the Typography to grow and stay centered
+							textAlign: "center",
+						}}
+					>
+						கொங்கு கறி கடை
+					</Typography>
+          <Link to="/adminbilling">
+						<Button
+							color="inherit"
+							variant="contained"
+							sx={{
+								backgroundColor: "#004E69",
+								color: "white",
+								"&:hover": {
+									bgcolor: "#004E69",
+									color: "white",
+								},
+							}}
+						>
+							Print Bill
+						</Button>
+					</Link>
+				</Toolbar>
+		</AppBar>
+    <Box sx={{marginTop:"20px",minHeight:"100vh"}}>
+   
+			
+    <Grid gap={4} xs={12}  sx={{display:"flex",justifyContent:"space-around"}}>
+    <Card sx={{ width: "25%",padding:"10px" }}>
+      <Box sx={{ display: "flex", justifyContent: "space-between", marginTop: "10px", padding: "0 10px" }}>
+        <Typography>TOTAL IMPORTS </Typography>
+        <Typography sx={{ color: "#10B981" }}>in KGs</Typography>
+      </Box>
+      <Box sx={{ display: "grid", gridTemplateColumns: "1fr", marginTop: "10px", gap: "10px", padding: "0 10px" }}>
+        <Box sx={{display:'grid', gridTemplateColumns: "1fr 1fr"}}>
+          <Typography variant='h6'>Chicken</Typography>
+          <Typography sx={{textAlign:'right'}}>{stockdata.chicken || 0}</Typography>
+        </Box>
+        <Box sx={{display:'grid', gridTemplateColumns: "1fr 1fr"}}>
+          <Typography variant='h6'>Mutton</Typography>
+          <Typography sx={{textAlign:'right'}}>{stockdata.mutton || 0}</Typography>
+        </Box>
+        <Box sx={{display:'grid', gridTemplateColumns: "1fr 1fr"}}>
+          <Typography variant='h6'>SKM Frozen</Typography>
+          <Typography sx={{textAlign:'right'}}>{stockdata.frozen || 0}</Typography>
+        </Box>
+        <Box sx={{display:'grid', gridTemplateColumns: "1fr 1fr"}}>
+          <Typography variant='h6'>Meat</Typography>
+          <Typography sx={{textAlign:'right'}}>{stockdata.meat || 0}</Typography>
+        </Box>
+        <Box sx={{display:'grid', gridTemplateColumns: "1fr 1fr"}}>
+          <Typography variant='h6'>Oil</Typography>
+          <Typography sx={{textAlign:'right'}}>{stockdata.oil || 0}</Typography>
+        </Box>
+      </Box>
+    </Card>
+
+    <Card sx={{ width: "25%",padding:"10px" }}>
+      <Box sx={{ display: "flex", justifyContent: "space-between", marginTop: "10px", padding: "0 10px" }}>
+        <Typography>AVAILABLE STOCKS </Typography>
+        <Typography sx={{ color: "#10B981" }}>in KGs</Typography>
+      </Box>
+      <Box sx={{ display: "grid", gridTemplateColumns: "1fr", marginTop: "10px", gap: "10px", padding: "0 10px" }}>
+        <Box sx={{display:'grid', gridTemplateColumns: "1fr 1fr"}}>
+          <Typography variant='h6'>Chicken</Typography>
+          <Typography sx={{textAlign:'right'}}>{stockdata.achicken || 0}</Typography>
+        </Box>
+        <Box sx={{display:'grid', gridTemplateColumns: "1fr 1fr"}}>
+          <Typography variant='h6'>Mutton</Typography>
+          <Typography sx={{textAlign:'right'}}>{stockdata.amutton || 0}</Typography>
+        </Box>
+        <Box sx={{display:'grid', gridTemplateColumns: "1fr 1fr"}}>
+          <Typography variant='h6'>SKM Frozen</Typography>
+          <Typography sx={{textAlign:'right'}}>{stockdata.afrozen || 0}</Typography>
+        </Box>
+        <Box sx={{display:'grid', gridTemplateColumns: "1fr 1fr"}}>
+          <Typography variant='h6'>Meat</Typography>
+          <Typography sx={{textAlign:'right'}}>{stockdata.ameat || 0}</Typography>
+        </Box>
+        <Box sx={{display:'grid', gridTemplateColumns: "1fr 1fr"}}>
+          <Typography variant='h6'>Oil</Typography>
+          <Typography sx={{textAlign:'right'}}>{stockdata.aoil || 0}</Typography>
+        </Box>
+      </Box>
+    </Card>
+
+    <Card sx={{ width: "25%",padding:"10px" }}>
+      <Box sx={{ display: "flex", justifyContent: "space-between", marginTop: "10px", padding: "0 10px" }}>
+        <Typography>TOTAL SALES </Typography>
+        <Typography sx={{ color: "#10B981" }}>in KGs</Typography>
+      </Box>
+      <Box sx={{ display: "grid", gridTemplateColumns: "1fr", marginTop: "10px", gap: "10px", padding: "0 10px" }}>
+        <Box sx={{display:'grid', gridTemplateColumns: "1fr 1fr"}}>
+          <Typography variant='h6'>Chicken</Typography>
+          <Typography sx={{textAlign:'right'}}>{salesdata.chicken || 0}</Typography>
+        </Box>
+        <Box sx={{display:'grid', gridTemplateColumns: "1fr 1fr"}}>
+          <Typography variant='h6'>Mutton</Typography>
+          <Typography sx={{textAlign:'right'}}>{salesdata.mutton || 0}</Typography>
+        </Box>
+        <Box sx={{display:'grid', gridTemplateColumns: "1fr 1fr"}}>
+          <Typography variant='h6'>SKM Frozen</Typography>
+          <Typography sx={{textAlign:'right'}}>{salesdata.frozen || 0}</Typography>
+        </Box>
+        <Box sx={{display:'grid', gridTemplateColumns: "1fr 1fr"}}>
+          <Typography variant='h6'>Meat</Typography>
+          <Typography sx={{textAlign:'right'}}>{salesdata.meat || 0}</Typography>
+        </Box>
+        <Box sx={{display:'grid', gridTemplateColumns: "1fr 1fr"}}>
+          <Typography variant='h6'>Oil</Typography>
+          <Typography sx={{textAlign:'right'}}>{salesdata.oil || 0}</Typography>
+        </Box>
+      </Box>
+    </Card>
+
+    {/* <Card sx={{ width: "40%",padding:"10px" }}>
+      <Box sx={{ display: "flex", justifyContent: "space-between", marginTop: "10px", padding: "0 10px" }}>
+        <Typography>TOTAL SALES </Typography>
+        <Typography sx={{ color: "#10B981" }}>in KGs</Typography>
+      </Box>
+      <Box sx={{ display: "grid",textAlign:'center', gridTemplateColumns: "1fr 1fr 1fr 1fr 1fr", marginTop: "10px", gap: "10px", padding: "0 10px" }}>
+        <Box>
+          <Typography variant='h6'>Chicken</Typography>
+          <Typography>{salesdata.chicken || 0}</Typography>
+        </Box>
+        <Box>
+          <Typography variant='h6'>Mutton</Typography>
+          <Typography>{salesdata.mutton || 0}</Typography>
+        </Box>
+        <Box>
+          <Typography variant='h6'>SKM Frozen</Typography>
+          <Typography>{salesdata.frozen || 0}</Typography>
+        </Box>
+        <Box>
+          <Typography variant='h6'>Meat</Typography>
+          <Typography>{salesdata.meat || 0}</Typography>
+        </Box>
+        <Box>
+          <Typography variant='h6'>Oil</Typography>
+          <Typography>{salesdata.oil || 0}</Typography>
+        </Box>
+      </Box>
       
-    }}
+    </Card> */}
+    {/* <Card sx={{ width: "20%",padding:"10px" }}>
+      <Box sx={{ display: "flex", justifyContent: "space-between", marginTop: "10px", padding: "0 10px" }}>
+        <Typography>TOTAL ORDERS </Typography>
+        <Typography sx={{ color: "#10B981" }}>in KGs</Typography>
+      </Box>
+      <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", marginTop: "10px", gap: "10px", padding: "0 10px" }}>
+        <Box>
+          <Typography variant='h6'>Chicken</Typography>
+          <Typography>100kg</Typography>
+        </Box>
+        <Box>
+          <Typography variant='h6'>Mutton</Typography>
+          <Typography>100kg</Typography>
+        </Box>
+      </Box>
+    </Card>
+    
+    <Card sx={{ width: "20%",padding:"10px" }}>
+      <Box sx={{ display: "flex", justifyContent: "space-between", marginTop: "10px", padding: "0 10px" }}>
+        <Typography>TOTAL SELL </Typography>
+        <Typography sx={{ color: "#10B981" }}>in KGs</Typography>
+      </Box>
+      <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", marginTop: "10px", gap: "10px", padding: "0 10px" }}>
+        <Box>
+          <Typography variant='h6'>Chicken</Typography>
+          <Typography>100kg</Typography>
+        </Box>
+        <Box>
+          <Typography variant='h6'>Mutton</Typography>
+          <Typography>100kg</Typography>
+        </Box>
+      </Box>
+    </Card> */}
+    </Grid>
+
+
+
+    <Grid container   sx={{ display: "flex", justifyContent: "center",marginTop:"10px"}}>
+  <Grid 
+    item 
+    sm={5} 
+    md={7} 
+    lg={7} 
+ 
+    sx={{display:"flex",justifyContent:"center"}}
   >
-            <Typography
-              sx={{
-                fontFamily: 'lato',
-                fontWeight: 700,
-                fontSize: '20px',
-              }}
-            >
-              Calendar
-            </Typography>
-            <Box sx={{ width: '100%', height: '100%', mt: 2 }}>
-              <Calendar
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  border: 'none', // Remove border
-                }}
-              />
-            </Box>
-          </Box>
-        </Grid>
-      </Grid>
-      <Grid container spacing={2} mt={2} px={8}>
-  <Grid item xs={12} md={8}>
-    <Box sx={{ p: 2 }}>
-      <Typography sx={{ fontFamily: 'lato', fontWeight: 700, fontSize: '20px' }}>Today Meat Selling</Typography>
-      <TableContainer sx={{ mt: 2, width: '100%', maxWidth: '845.08px', height: 'auto', maxHeight: '383px' }}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell sx={{ fontFamily: 'Lato', fontSize: '14px', fontWeight: 700, lineHeight: '19.6px', textAlign: 'left' }}>MEAT NAME</TableCell>
-              <TableCell sx={{ fontFamily: 'Lato', fontSize: '14px', fontWeight: 700, lineHeight: '19.6px', textAlign: 'left' }}>TOTAL STOCK</TableCell>
-              <TableCell sx={{ fontFamily: 'Lato', fontSize: '14px', fontWeight: 700, lineHeight: '19.6px', textAlign: 'left' }}>QUANTITY (in KGs)</TableCell>
-              <TableCell sx={{ fontFamily: 'Lato', fontSize: '14px', fontWeight: 700, lineHeight: '19.6px', textAlign: 'left' }}>RATE (per KG)</TableCell>
-              <TableCell sx={{ fontFamily: 'Lato', fontSize: '14px', fontWeight: 700, lineHeight: '19.6px', textAlign: 'left' }}>PRICE</TableCell>
-              <TableCell sx={{ fontFamily: 'Lato', fontSize: '14px', fontWeight: 700, lineHeight: '19.6px', textAlign: 'left' }}>STATUS</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rows.map((row) => (
-              <TableRow
-                key={row.name}
-                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-              >
-                <TableCell sx={{ fontFamily: 'Lato', fontSize: '16.4px', fontWeight: 400, lineHeight: '22.95px', textAlign: 'left', py: 4 }} component="th" scope="row">
-                  {row.name}
-                </TableCell>
-                <TableCell sx={{ fontFamily: 'Lato', fontSize: '16.4px', fontWeight: 400, lineHeight: '22.95px', textAlign: 'left' }}>{row.totalStock}</TableCell>
-                <TableCell sx={{ fontFamily: 'Lato', fontSize: '16.4px', fontWeight: 400, lineHeight: '22.95px', textAlign: 'left' }}>{row.quantity}</TableCell>
-                <TableCell sx={{ fontFamily: 'Lato', fontSize: '16.4px', fontWeight: 400, lineHeight: '22.95px', textAlign: 'left' }}>{row.rate}</TableCell>
-                <TableCell sx={{ fontFamily: 'Lato', fontSize: '16.4px', fontWeight: 400, lineHeight: '22.95px', textAlign: 'left' }}>{row.price}</TableCell>
-                <TableCell sx={{ fontFamily: 'Lato', fontSize: '16.4px', fontWeight: 400, lineHeight: '22.95px', textAlign: 'left', color: getStatusColor(row.status) }}>
-                  {row.status}
-                </TableCell>
-              </TableRow>
-            ))}
-            <TableRow
-              sx={{ '&:last-child td, &:last-child th': { border: 0 }, fontFamily: 'Lato', fontSize: '16.4px', fontWeight: 400, lineHeight: '22.95px', textAlign: 'left' }}
-            >
-              <TableCell sx={{ fontWeight: 700 }}>Total</TableCell>
-              <TableCell>{totals.totalStock}</TableCell>
-              <TableCell>{totals.totalQuantity}</TableCell>
-              <TableCell>{totals.totalRate}</TableCell>
-              <TableCell>{totals.totalPrice}</TableCell>
-              <TableCell></TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
-      </TableContainer>
+
+ <Box > <Typography variant='h6' >weekly Meat Selling</Typography>
+ 
+    <BarChart
+      xAxis={[{ scaleType: 'band', data: ['Sun', 'Mon', 'Tue', 'Wed','Thur','Fri','Sat'] }]}
+      yAxis={[{ min: 0, max: Number(graphData.max) }]}
+      series={[
+        { data: graphData.chicken , color: "#2596BE",label:"Chicken"},
+        { data: graphData.mutton , color: "#004E69",label:"Mutton"},
+        { data: graphData.frozen , color: "#28B463",label:"Frozen Meat"},
+        { data: graphData.oil , color: "#D35400 ",label:"Oil"},
+        { data: graphData.meat , color: "#E74C3C ",label:"Meat"}
+      ]}
+      width={"850"}
+      height={"350"}
+    />
     </Box>
   </Grid>
-  <Grid item xs={12} md={4}>
-    <Box
-      sx={{
-        border: '2px solid #004E69',
-        borderRadius: '30px',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        width: '100%',
-        maxWidth: '286px',
-        height: '329px',
-        mt: 2, // Add margin-top to create space between the elements
-      }}
-    >
-      <Typography sx={{ fontFamily: 'Lato', fontSize: '16.4px', fontWeight: 400, lineHeight: '19.95px', color: '#004E69' }}>Maximum Selling</Typography>
-    </Box>
+  <Grid 
+    item 
+    sm={5} 
+    md={5} 
+    lg={4} 
+   
+    sx={{ padding: "20px" , display:"flex",justifyContent:"end"}}
+  >
+    <Calendar />
   </Grid>
 </Grid>
 
+<Grid container  sx={{display:"flex",justifyContent:"center"}}>
+    <Grid  xs={8} >
+    <TableContainer >
+    <Typography variant='h6'>Today meet selling</Typography>
+    <Table sx={{ mixWidth: 700,minHeight:300 }} size="medium" aria-label="a dense table">
+        <TableHead>
+          <TableRow>
+            <TableCell align='center' >MEAT NAME</TableCell>
+            <TableCell align="center">CATEGORY</TableCell>
+            <TableCell align="center">QUANTITY (in KGs)</TableCell>
+            <TableCell align="center">RATE(in KGs)</TableCell>
+            <TableCell align="center">PRICE</TableCell>
+            {/* <TableCell align="center">STATUS(in KGs)</TableCell> */}
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {row1.map((row,index) => (
+            <TableRow
+              key={index}
+              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+            >
+              <TableCell align='center'>
+                {row.Type }
+              </TableCell>
+            
+              <TableCell align="center" >{row.Category}</TableCell>
+              <TableCell align="center">{row.NoOfKg}</TableCell>
+              <TableCell align="center">{row.PricePerKg}</TableCell>
+              <TableCell align="center">{row.TotalAmount}</TableCell>
+              {/* <TableCell align="center">  <Chip label={row.status}  sx={{ color: row.status === "out of stock" ? "red" : "green",bgcolor: row.status === "out of stock" ? "#F5252526" : "#6BEBA41A" }} /></TableCell> */}
+              </TableRow>  
+              ))}
+
+         
+             <TableRow align="center">
+            <TableCell align='center'><b>TOTAL</b></TableCell>
+            <TableCell align="center"></TableCell>
+            <TableCell align="center"></TableCell>
+            <TableCell align="center"></TableCell>
+            <TableCell align="center"><b>₹{dailyTotal}.00</b></TableCell>
+            <TableCell align="center"></TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
+    </TableContainer>
+    </Grid>
+    <Grid xs={3} md={3}  sx={{  display:"flex",flexDirection:"row",justifyContent:"center",alignItems:"center"}}>
+    
+ 
+ <Box sx={{border:"1px solid #004E69",borderRadius:"19px",maxHeight:"300px"}}>
+
+ <Typography sx={{textAlign:"center",marginBottom: '-30px',color:'#004E69' }} variant='h6'>Maximum Selling</Typography>   
+ <PieChart
+      series={[
+       
+        {
+          data: data2,
+          width: 500,
+          height: 200,
+          innerRadius: 40,
+          outerRadius: 80,
+        },
+      ]}
+      height={300}
+      width={280}
+     
+      slotProps={{
+        legend: { hidden: false },
+      }}
+    />
+        </Box>
+
+ 
+
+    
+        
+    </Grid>
+</Grid>
+
+
+
+    
+        
     </Box>
-  );
+
+ 
+
+  </>   
+  )
 }
 
-export default Dashboard;
+export default Dashboard

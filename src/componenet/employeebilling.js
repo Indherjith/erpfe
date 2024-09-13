@@ -53,24 +53,7 @@ const Billing = () => {
 
 
 	useEffect(()=>{
-		fetchStocks();
-		if(prodemp == "Chicken"){
-			setCategoryItems([
-				{ value: "Broiler", label: "Broiler Chicken" },
-				{ value: "Country Chicken", label: "Country Chicken" },
-			])
-		}
-		else{
-			const matches = tableData1.filter(item=>(item.name == prodemp && item.type == prodemp))
-			console.log(matches.length);
-			
-			if(matches.length == 0){
-				localStorage.removeItem('prodemp');
-				setProdemp('');
-				setDropdownCategoryValue('');
-				setDropdowntypeValue('');
-			}
-		}
+		fetchStocks();		
 	},[])
 
 	const fetchStocks = async()=>{
@@ -78,7 +61,35 @@ const Billing = () => {
 			const response = await axios.get(`${baseUrl}stocks`);
 			if(response.data.Items){
 				setTableData1(response.data.Items);
-			}
+				let data = response.data.Items;
+				if(prodemp == "Chicken"){
+					setCategoryItems([
+						{ value: "Broiler", label: "Broiler Chicken" },
+						{ value: "Country Chicken", label: "Country Chicken" },
+					])
+				}
+				else{
+					const matches = data.filter(item=>(item.name == prodemp && item.type == prodemp))
+					console.log(data);
+					
+					if(matches.length == 0){
+						localStorage.removeItem('prodemp');
+						setProdemp('');
+						setDropdownCategoryValue('');
+						setDropdowntypeValue('');
+					}
+					const itemAvail = data.find(item=>(item.name == prodemp));
+						if(itemAvail){
+							setDropdownCategoryValue(itemAvail.type);
+							setCurrItem({...itemAvail});
+							setPrice(itemAvail.rate)
+						}
+						else{
+							alert(`${prodemp} Stock is Not Available`);
+							setDropdownCategoryValue('');
+						}
+					}
+				}
 			else{
 				alert(response.data.msg)
 			}
@@ -183,6 +194,7 @@ const Billing = () => {
 		}
 	};
 	const handleKgchange = (e) => {
+		console.log(currItem);
 		if(e<=Number(currItem.quantity)){
 			setKg(e);
 		}
@@ -211,7 +223,7 @@ const Billing = () => {
 			itemCode = "003";
 		} else if (dropdowntypeValue === "Oil") {
 			itemCode = "004";
-		} else if (dropdowntypeValue === "SKM Frozen Items") {
+		} else if (dropdowntypeValue === "SKM Frozen item") {
 			itemCode = "005";
 		} else {
 			itemCode = "";
@@ -508,7 +520,7 @@ return (
 								<MenuItem value="Chicken">Chicken</MenuItem>
 								<MenuItem value="Mutton">Mutton</MenuItem>
 								<MenuItem value="Oil">Oil</MenuItem>
-								<MenuItem value="SKM Frozen Items">SKM Frozen Items</MenuItem>
+								<MenuItem value="SKM Frozen item">SKM Frozen Items</MenuItem>
 							</Select>
 						</FormControl>
 					</Grid>

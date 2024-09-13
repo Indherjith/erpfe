@@ -41,7 +41,7 @@ const Navbar = () => {
 		try {
 			const response = await axios.get(`${baseUrl}sales`);
 			setData(response.data.Items);
-			console.log(response.data.Items);
+			console.log(response.data);
 			
 		} catch (error) {
 			console.error("Error fetching data:", error);
