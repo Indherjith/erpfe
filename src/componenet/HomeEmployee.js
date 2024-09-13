@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Container,
   Grid,
@@ -11,7 +11,7 @@ import {
   Toolbar,
   ThemeProvider,
 } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import theme from "./theme";
 
 import chickenImage from "../Assests/Images/Chicken.png";
@@ -19,6 +19,7 @@ import muttonImage from "../Assests/Images/Goat.png";
 import meatImage from "../Assests/Images/Meat.png";
 import skmImage from "../Assests/Images/Frozen.png";
 import oilImage from "../Assests/Images/oil.png";
+import Employee from './employee';
 
 const items = [
   { name: "Chicken", tamilName: "கோழி", img: chickenImage, path: "/employebilling" },
@@ -29,7 +30,11 @@ const items = [
 ];
 
 const HomeEmployee = () => {
-  return (
+  const navigate = useNavigate();
+  const EmployeeAuth = localStorage.getItem('employeeauth');
+  if(EmployeeAuth){
+    console.log(EmployeeAuth);
+    return (
     <>
       <ThemeProvider theme={theme}>
         <AppBar
@@ -191,6 +196,11 @@ const HomeEmployee = () => {
       </ThemeProvider>
     </>
   );
+  }
+  else{
+    window.location.href = '/';
+  }
+  
 };
 
 export default HomeEmployee;

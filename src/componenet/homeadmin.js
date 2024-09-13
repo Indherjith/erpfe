@@ -1,6 +1,6 @@
-import React from "react";
+import React,{useEffect} from "react";
 import { Container, Grid, Card, CardMedia, CardContent, Typography, Button, AppBar, Toolbar, ThemeProvider } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import theme from "./theme";
 
 import chickenImage from '../Assests/Images/Chicken.png'; // Adjust the path as necessary
@@ -18,6 +18,13 @@ const items = [
 ];
 
 const HomeAdmin = () => {
+  const navigate = useNavigate();
+  useEffect(()=>{
+    const AdminAuth = localStorage.getItem('adminauth');
+    if(!AdminAuth || AdminAuth == 'false'){
+      navigate('/');
+    }
+  },[])
   const auth = localStorage.getItem('adminauth') == "true" ? true : false;
     if(!auth){
       window.location.href = '/';

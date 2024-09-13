@@ -18,9 +18,16 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import { ArrowDropUp, ArrowDropDown } from "@mui/icons-material";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const StockManager = () => {
+	const navigate = useNavigate();
+  useEffect(()=>{
+    const AdminAuth = localStorage.getItem('adminauth');
+    if(!AdminAuth || AdminAuth == 'false'){
+      navigate('/');
+    }
+  },[])
 	const [data, setData] = useState([]);
 	const [sortConfig, setSortConfig] = useState({
 		key: "Date",
