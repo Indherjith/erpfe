@@ -90,6 +90,19 @@ const Dashboard = () => {
         }
       };
 
+      const CalenderChange = async (datefrom) => {
+        try {
+          const response = await axios.post(`${baseUrl}dayat`, { date: datefrom });
+          setRow1(response.data.Items); 
+          setDailyTotal(response.data.total); 
+          setGraphdata(response.data.graphItems);
+      
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+      };
+      
+
   return (
   <>
     <AppBar sx={{ height: "112px", position: "static", top: 0 }}>
@@ -241,68 +254,6 @@ const Dashboard = () => {
       </Box>
     </Card>
 
-    {/* <Card sx={{ width: "40%",padding:"10px" }}>
-      <Box sx={{ display: "flex", justifyContent: "space-between", marginTop: "10px", padding: "0 10px" }}>
-        <Typography>TOTAL SALES </Typography>
-        <Typography sx={{ color: "#10B981" }}>in KGs</Typography>
-      </Box>
-      <Box sx={{ display: "grid",textAlign:'center', gridTemplateColumns: "1fr 1fr 1fr 1fr 1fr", marginTop: "10px", gap: "10px", padding: "0 10px" }}>
-        <Box>
-          <Typography variant='h6'>Chicken</Typography>
-          <Typography>{salesdata.chicken || 0}</Typography>
-        </Box>
-        <Box>
-          <Typography variant='h6'>Mutton</Typography>
-          <Typography>{salesdata.mutton || 0}</Typography>
-        </Box>
-        <Box>
-          <Typography variant='h6'>SKM Frozen</Typography>
-          <Typography>{salesdata.frozen || 0}</Typography>
-        </Box>
-        <Box>
-          <Typography variant='h6'>Meat</Typography>
-          <Typography>{salesdata.meat || 0}</Typography>
-        </Box>
-        <Box>
-          <Typography variant='h6'>Oil</Typography>
-          <Typography>{salesdata.oil || 0}</Typography>
-        </Box>
-      </Box>
-      
-    </Card> */}
-    {/* <Card sx={{ width: "20%",padding:"10px" }}>
-      <Box sx={{ display: "flex", justifyContent: "space-between", marginTop: "10px", padding: "0 10px" }}>
-        <Typography>TOTAL ORDERS </Typography>
-        <Typography sx={{ color: "#10B981" }}>in KGs</Typography>
-      </Box>
-      <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", marginTop: "10px", gap: "10px", padding: "0 10px" }}>
-        <Box>
-          <Typography variant='h6'>Chicken</Typography>
-          <Typography>100kg</Typography>
-        </Box>
-        <Box>
-          <Typography variant='h6'>Mutton</Typography>
-          <Typography>100kg</Typography>
-        </Box>
-      </Box>
-    </Card>
-    
-    <Card sx={{ width: "20%",padding:"10px" }}>
-      <Box sx={{ display: "flex", justifyContent: "space-between", marginTop: "10px", padding: "0 10px" }}>
-        <Typography>TOTAL SELL </Typography>
-        <Typography sx={{ color: "#10B981" }}>in KGs</Typography>
-      </Box>
-      <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", marginTop: "10px", gap: "10px", padding: "0 10px" }}>
-        <Box>
-          <Typography variant='h6'>Chicken</Typography>
-          <Typography>100kg</Typography>
-        </Box>
-        <Box>
-          <Typography variant='h6'>Mutton</Typography>
-          <Typography>100kg</Typography>
-        </Box>
-      </Box>
-    </Card> */}
     </Grid>
 
 
@@ -342,7 +293,7 @@ const Dashboard = () => {
    
     sx={{ padding: "20px" , display:"flex",justifyContent:"end"}}
   >
-    <Calendar />
+    <Calendar onButtonClick={CalenderChange} />
   </Grid>
 </Grid>
 

@@ -5,11 +5,12 @@ import { TextField, Box, Typography } from "@mui/material";
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3'
 
 
-const Calendar = () => {
+const Calendar = ({ onButtonClick }) => {
 	const [date, setDate] = useState(new Date());
 
 	const handleDateChange = (newDate) => {
 		setDate(newDate);
+		onButtonClick(newDate);
 	};
 
 	return (
