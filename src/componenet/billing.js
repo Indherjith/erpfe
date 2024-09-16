@@ -192,6 +192,8 @@ const Billing = () => {
 			itemCode = "004";
 		} else if (dropdowntypeValue === "SKM Frozen item") {
 			itemCode = "005";
+		}else if (dropdowntypeValue === "Meat") {
+			itemCode = "005";
 		} else {
 			itemCode = "";
 		}
@@ -487,6 +489,7 @@ return (
 								<MenuItem value="Mutton">Mutton</MenuItem>
 								<MenuItem value="Oil">Oil</MenuItem>
 								<MenuItem value="SKM Frozen item">SKM Frozen Items</MenuItem>
+								<MenuItem value="Meat">Meat</MenuItem>
 							</Select>
 						</FormControl>
 					</Grid>

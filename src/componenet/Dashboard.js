@@ -20,11 +20,11 @@ import axios from 'axios';
 
 
 const Dashboard = () => {
-      const [data2,setData2] = useState([{ label: 'Chicken', value: 300 ,color:"#2596BE"},
-        { label: 'Mutton', value: 300,color:'#004E69'},
-        { label: 'Meat', value: 300,color:'#E74C3C '},
-        { label: 'Frozen', value: 300,color:'#28B463'},
-        { label: 'Oil', value: 300,color:'#D35400'}]); 
+      const [data2,setData2] = useState([{ label: 'Chicken', value: 0 ,color:"#2596BE"},
+        { label: 'Mutton', value: 0,color:'#004E69'},
+        { label: 'Meat', value: 0,color:'#E74C3C '},
+        { label: 'Frozen', value: 0,color:'#28B463'},
+        { label: 'Oil', value: 0,color:'#D35400'}]); 
       
       const [row1,setRow1] = useState([]);
       const [dailyTotal,setDailyTotal] = useState(0);
@@ -71,6 +71,7 @@ const Dashboard = () => {
         try {
           const response = await axios.get(`${baseUrl}graph`);
           setGraphdata(response.data.Items);
+          console.log(response.data.Items);
           
         } catch (error) {
           console.error("Error fetching data:", error);
@@ -78,6 +79,7 @@ const Dashboard = () => {
       }
     
       const fetchData = async () => {
+        setRow1([]);
         try {
           const response = await axios.get(`${baseUrl}today`);
           setRow1(response.data.Items);
